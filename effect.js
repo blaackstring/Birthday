@@ -209,37 +209,168 @@ $('document').ready(function(){
 
 
 
-  const words = `Hey Sarah(CHIMKANDI) , on this amazing day, I want to remind you how truly special you are. Another year, another chance to chase your dreams and live freely. May happiness, love, and success walk beside you at every step. Celebrate with a smile, because today is your day to shine. Life is a journey — keep your spirit high, trust in yourself, and never stop believing. You’ve come far, and even brighter days are ahead. Wishing you the happiest birthday ever. Let’s make this memory unforgettable. and One day form will of the ALLAH we can be Together`.split(" ");
-
-    const card = document.getElementById("birthdayCard");
-    const messageEl = document.getElementById("message");
-
-    let hasTyped = false;
-    let i = 0;
-
-    const typeWord = () => {
-      if (i < words.length) {
-        messageEl.innerHTML += words[i] + " ";
-        i++;
-        setTimeout(typeWord, 130);
-      } else {
-        messageEl.classList.remove("typing");
-      }
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !hasTyped) {
-          card.classList.add("visible");
-          hasTyped = true;
-          typeWord();
-        }
-      });
-    }, {
-      threshold: 0.6
-    });
-
-    observer.observe(card);
- 
+//  
+        // Optional: Uncomment to enable typing effect
+        // setTimeout(typeMessage, 1000);
 
 //alert('hello');
+
+// function typeMessageFromArray() {
+//     message.textContent = '';
+//     let i = 0;
+
+//     const typeInterval = setInterval(() => {
+//         if (i < words.length) {
+//             message.textContent += words[i] + ' ';
+//             i++;
+//         } else {
+//             clearInterval(typeInterval);
+//         }
+//     }, 200); // adjust speed
+// }
+
+// window.addEventListener("DOMContentLoaded", () => {
+//   const card = document.getElementById("birthdayCard");
+
+//   setTimeout(() => {
+//     card.classList.add("opened");
+//   }, 400); // Card reveal
+
+//   setTimeout(typeMessage, 1500); // Typing effect
+
+//   setTimeout(() => {
+//     startFloatingHearts();
+//     heartsBtn.textContent = '⏹️ Stop Hearts';
+//     isHeartsActive = true;
+//   }, 2500); // Hearts float
+// });
+
+
+
+ const envelope = document.getElementById('envelope');
+        let isOpened = false;
+
+        envelope.addEventListener('click', function() {
+            if (!isOpened) {
+                envelope.classList.add('opened');
+                isOpened = true;
+                createHeartExplosion();
+            }
+        });
+
+        // Create floating hearts
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('heart-decoration');
+            const heartSymbols = ['💕', '💖', '💗', '💝', '💘', '❤️', '💙', '💜'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 4) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+				heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+                
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 8000);
+            }, 800);
+        }
+
+        // Create heart explosion when envelope opens
+        function createHeartExplosion() {
+            const colors = ['#e74c3c', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5'];
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.style.position = 'fixed';
+                    heart.style.left = '50%';
+                    heart.style.top = '50%';
+                    heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.pointerEvents = 'none';
+                    heart.style.zIndex = '1000';
+                    
+                    const angle = (Math.PI * 2 * i) / 15;
+                    const velocity = Math.random() * 200 + 100;
+                    
+                    document.body.appendChild(heart);
+                    
+                    let x = 0, y = 0;
+                    const animate = () => {
+                        x += Math.cos(angle) * 3;
+                        y += Math.sin(angle) * 3 + 2;
+                        
+                        heart.style.transform = `translate(${x}px, ${y}px) scale(${1 - y/300})`;
+                        heart.style.opacity = 1 - y/300;
+                        
+                        if (y < 300) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            heart.remove();
+                        }
+                    };
+                    
+                    animate();
+                }, i * 100);
+            }
+        }
+
+        // Start floating hearts animation
+        createFloatingHearts();
+
+        // Add some sparkle effect
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.9) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '⭐ 💫 ';
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = e.clientX+12 + 'px';
+                sparkle.style.top = e.clientY+33	 + 'px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.fontSize = '30px';
+                sparkle.style.zIndex = '999';
+                sparkle.style.animation = 'float 4s ease-out forwards';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 2000);
+            }
+        });
+
+
+		document.addEventListener('DOMContentLoaded', function() {
+  const messageEl = document.getElementById('message');
+  const fullText = messageEl.textContent;
+  messageEl.textContent = '';
+
+  function typeEffect(element, text, speed = 40) {
+    let i = 0;
+    function typing() {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(typing, speed);
+      }
+    }
+    typing();
+  }
+
+  const observer = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        typeEffect(messageEl, fullText);
+        observer.unobserve(messageEl);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  observer.observe(messageEl);
+});
